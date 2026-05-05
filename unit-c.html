@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit C — Writing for the Web · Writing for Digital Media</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:        #1a56db;
+  --blue-light:  #e8f0fe;
+  --blue-dark:   #1e3a8a;
+  --green:       #057a55;
+  --green-light: #def7ec;
+  --yellow:      #c27803;
+  --yellow-light:#fdf6b2;
+  --orange:      #c2500a;
+  --purple:      #7c3aed;
+  --purple-light:#ede9fe;
+  --red:         #dc2626;
+  --red-light:   #fee2e2;
+  --gray-50:     #f9fafb;
+  --gray-100:    #f3f4f6;
+  --gray-200:    #e5e7eb;
+  --gray-400:    #9ca3af;
+  --gray-600:    #4b5563;
+  --gray-700:    #374151;
+  --gray-800:    #1f2937;
+  --gray-900:    #111827;
+  --radius:      8px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--gray-800);
+  background: var(--gray-50);
+}
+
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── SITE HEADER ── */
+.site-header {
+  background: white;
+  border-bottom: 1px solid var(--gray-200);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.course-name { font-size: 13px; font-weight: 600; color: var(--gray-600); }
+.course-name a { color: var(--blue); }
+.inst { font-size: 12px; color: var(--gray-400); }
+.inst a { color: var(--gray-400); }
+.inst a:hover { color: var(--gray-600); }
+.site-nav { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.site-nav a {
+  font-size: 12px; font-weight: 500; color: var(--gray-600);
+  padding: 4px 10px; border-radius: 999px;
+  transition: background .15s, color .15s; white-space: nowrap;
+}
+.site-nav a:hover { background: var(--blue-light); color: var(--blue); text-decoration: none; }
+.site-nav a.current { background: var(--blue); color: white; pointer-events: none; }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 60%, #2563eb 100%);
+  color: white;
+  padding: 48px 24px 40px;
+  text-align: center;
+}
+.hero h1 { font-size: clamp(22px, 4vw, 30px); font-weight: 700; margin-bottom: 8px; }
+.hero .subtitle { font-size: 15px; opacity: .75; margin-bottom: 24px; }
+.badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+.badge { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: 4px 14px; font-size: 13px; font-weight: 500; }
+.credit { font-size: 12px; opacity: .55; }
+.credit a { color: white; }
+
+/* ── STICKY TAB BAR ── */
+.tabs-bar {
+  background: white;
+  border-bottom: 2px solid var(--gray-200);
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: sticky;
+  top: 45px;
+  z-index: 99;
+  justify-content: center;
+}
+.tabs-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: 14px 18px; font-size: 13px; font-weight: 600; color: var(--gray-600);
+  border: none; background: none; cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: color .15s, border-color .15s; font-family: 'Inter', sans-serif;
+}
+.tab-btn:hover { color: var(--blue); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+/* ── PANELS ── */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.container { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--gray-600); margin: 28px 0 10px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--gray-200);
+}
+.section-intro { font-size: 14px; color: var(--gray-600); margin-bottom: 20px; line-height: 1.7; }
+
+/* ── ACCORDION ── */
+.accordion { border: 1px solid #b2dce8; border-radius: var(--radius); margin-bottom: 10px; background: white; overflow: hidden; }
+.accordion summary {
+  padding: 14px 18px; font-weight: 600; font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; gap: 8px; list-style: none;
+  user-select: none; background: #e8f6f9; color: #1a4a56;
+}
+.accordion summary::-webkit-details-marker { display: none; }
+.accordion summary::after { content: '▾'; margin-left: auto; font-size: 12px; color: #4a8fa0; transition: transform .2s; }
+.accordion[open] summary::after { transform: rotate(180deg); }
+.accordion summary:hover { background: #d4eef4; }
+.accordion-body { padding: 14px 18px 18px; border-top: 1px solid #b2dce8; font-size: 14px; color: var(--gray-700); line-height: 1.7; }
+.accordion-body p { margin-bottom: 8px; }
+.accordion-body ul, .accordion-body ol { padding-left: 20px; margin-bottom: 8px; }
+.accordion-body li { margin-bottom: 4px; }
+.accordion-body a { color: var(--blue); }
+
+/* ── CALLOUTS ── */
+.callout { border-radius: var(--radius); padding: 12px 16px; margin: 14px 0; font-size: 13.5px; display: flex; gap: 10px; line-height: 1.6; }
+.callout.info    { background: var(--blue-light);    border-left: 3px solid var(--blue);   color: #1e3a8a; }
+.callout.warn    { background: var(--yellow-light);  border-left: 3px solid var(--yellow); color: #78350f; }
+.callout.success { background: var(--green-light);   border-left: 3px solid var(--green);  color: #064e3b; }
+.callout.tip     { background: #e8f6f9; border-left: 3px solid #4a8fa0; color: #1a4a56; }
+
+/* ── UNIT CARDS (index page) ── */
+.units-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+.ucard {
+  display: block; background: white; border: 1px solid var(--gray-200);
+  border-radius: var(--radius); padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  transition: box-shadow .2s, transform .2s, border-color .2s;
+  color: inherit; text-decoration: none;
+}
+.ucard:hover { box-shadow: 0 4px 12px rgba(0,0,0,.1); transform: translateY(-2px); border-color: var(--blue); text-decoration: none; }
+.ucard-num { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; }
+.ucard-title { font-size: 17px; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+.ucard-desc { font-size: 13px; color: var(--gray-600); margin-bottom: 12px; line-height: 1.55; }
+.ucard-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+.ucard-tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--blue-light); color: var(--blue); font-weight: 500; }
+.ucard-arr { font-size: 12px; color: var(--blue); font-weight: 500; }
+.ucard.c-intro { border-top: 3px solid var(--blue); }
+.ucard.c-a     { border-top: 3px solid #3b82f6; }
+.ucard.c-b     { border-top: 3px solid var(--purple); }
+.ucard.c-c     { border-top: 3px solid var(--green); }
+.ucard.c-d     { border-top: 3px solid var(--orange); }
+.ucard.c-x     { border-top: 3px solid var(--red); }
+
+/* ── MODULE LAYOUT ── */
+.mod-body { display: flex; min-height: calc(100vh - 160px); }
+.sidebar {
+  width: 220px; flex-shrink: 0; background: white;
+  border-right: 1px solid var(--gray-200);
+  padding: 20px 0 48px;
+  position: sticky; top: 45px; height: calc(100vh - 45px); overflow-y: auto;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 2px; }
+.sb-lbl {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gray-400); padding: 10px 16px 6px; display: block;
+}
+.sb-intro {
+  display: block; width: 100%; text-align: left; background: none;
+  border: none; border-left: 3px solid transparent;
+  padding: 8px 16px; font-size: 13px; font-style: italic; color: var(--gray-600);
+  cursor: pointer; transition: background .12s, color .12s; line-height: 1.4;
+  font-family: 'Inter', sans-serif;
+}
+.sb-intro:hover { background: var(--blue-light); color: var(--blue); }
+.sb-intro.on { background: var(--blue-light); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
+.sb-item {
+  display: flex; align-items: flex-start; gap: 8px; width: 100%; text-align: left;
+  background: none; border: none; border-left: 3px solid transparent;
+  padding: 7px 16px; font-size: 12.5px; color: var(--gray-600);
+  cursor: pointer; transition: background .12s, color .12s; line-height: 1.4;
+  font-family: 'Inter', sans-serif;
+}
+.sb-item:hover { background: var(--blue-light); color: var(--blue); }
+.sb-item.on { background: var(--blue-light); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
+.sb-n { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gray-400); flex-shrink: 0; margin-top: 2px; min-width: 22px; }
+.sb-item.on .sb-n { color: var(--blue); }
+
+/* ── MAIN CONTENT ── */
+.main { flex: 1; min-width: 0; padding: 32px 36px 64px; max-width: 760px; }
+.sec { display: none; } .sec.on { display: block; }
+
+/* ── SECTION PANEL HEADER ── */
+.sec-hd {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-bottom: 20px; padding-bottom: 12px;
+  border-bottom: 2px solid var(--gray-200);
+}
+.sec-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: white; background: var(--blue); padding: 3px 8px; border-radius: 4px;
+  flex-shrink: 0; font-family: 'JetBrains Mono', monospace;
+}
+.sec-hd h2 { font-size: 22px; font-weight: 700; color: var(--gray-900); line-height: 1.2; }
+
+/* ── INTRO BOX ── */
+.intro-box {
+  background: white; border: 1px solid var(--gray-200);
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 20px;
+}
+.intro-box h3 { font-size: 15px; font-weight: 700; color: var(--gray-800); margin-bottom: 10px; }
+.intro-box p, .intro-box li { font-size: 14px; color: var(--gray-600); margin-bottom: 8px; line-height: 1.65; }
+.intro-box ul, .intro-box ol { padding-left: 20px; }
+.intro-box li { margin-bottom: 5px; }
+.intro-box strong { color: var(--gray-800); }
+.intro-box a { color: var(--blue); }
+
+/* ── SECTION CARD GRID ── */
+.sec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin: 14px 0 20px; }
+.scrd {
+  background: white; border: 1px solid var(--gray-200);
+  border-radius: var(--radius); padding: 14px 16px;
+  cursor: pointer; text-align: left; width: 100%;
+  font-family: 'Inter', sans-serif;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+.scrd:hover { border-color: var(--blue); box-shadow: 0 4px 12px rgba(0,0,0,.08); background: var(--blue-light); }
+.scrd-n { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gray-400); margin-bottom: 4px; }
+.scrd-t { font-size: 13px; font-weight: 600; color: var(--gray-800); margin-bottom: 3px; }
+.scrd-m { font-size: 11.5px; color: var(--gray-400); }
+.start-btn {
+  font-family: 'Inter', sans-serif; font-size: 13px; color: var(--blue);
+  font-weight: 600; cursor: pointer; background: none; border: none; padding: 4px 0;
+}
+.start-btn:hover { text-decoration: underline; }
+
+/* ── VIDEO ── */
+.vid { border-radius: var(--radius); overflow: hidden; aspect-ratio: 16/9; margin-bottom: 16px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+.vid iframe { width: 100%; height: 100%; border: none; }
+
+/* ── BOOKMARKS ── */
+.bmarks { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 14px 18px; margin-top: 12px; }
+.bmarks h4 { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 10px; }
+.bm { display: flex; align-items: center; gap: 14px; padding: 6px 0; border-bottom: 1px solid var(--gray-100); font-size: 13.5px; color: var(--gray-700); }
+.bm:last-child { border: none; }
+.bm-t { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--blue); width: 40px; flex-shrink: 0; }
+
+/* ── AI AIDS ── */
+.ai-box { background: var(--blue-light); border: 1px solid #bfdbfe; border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px; }
+.ai-box h4 { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--blue-dark); margin-bottom: 10px; }
+.ai-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; font-size: 13.5px; }
+.ai-row:last-child { margin-bottom: 0; }
+.ai-row .ico { font-size: 16px; flex-shrink: 0; }
+.ai-row a { color: var(--blue); font-weight: 500; display: block; }
+.ai-row p { font-size: 12px; color: var(--gray-600); margin-top: 2px; }
+
+/* ── STUDY META ── */
+.smeta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 10px 16px; margin-bottom: 16px; font-size: 13px; color: var(--gray-600); }
+.chip { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--yellow-light); color: var(--yellow); padding: 2px 9px; border-radius: 4px; font-weight: 600; }
+
+/* ── RESOURCE LIST ── */
+.res-blk { margin-bottom: 24px; }
+.res-blk h4 { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gray-400); padding-bottom: 8px; border-bottom: 1px solid var(--gray-200); margin-bottom: 8px; }
+.rr { display: flex; align-items: flex-start; gap: 10px; padding: 8px 10px; border-radius: 6px; margin-bottom: 3px; transition: background .12s; }
+.rr:hover { background: var(--blue-light); }
+.rr-n { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gray-400); width: 18px; flex-shrink: 0; padding-top: 3px; }
+.rr-b { flex: 1; min-width: 0; }
+.rr-b a { font-size: 13.5px; font-weight: 500; color: var(--blue); display: block; margin-bottom: 2px; }
+.rr-b a:hover { text-decoration: underline; }
+.rr-b .note { font-size: 12px; color: var(--gray-500, #6b7280); line-height: 1.5; }
+.rtag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; flex-shrink: 0; margin-top: 3px; }
+.t-read  { background: var(--blue-light); color: var(--blue); }
+.t-watch { background: var(--green-light); color: var(--green); }
+.t-skim  { background: var(--yellow-light); color: var(--yellow); }
+.t-fun   { background: var(--purple-light); color: var(--purple); }
+.t-extra { background: var(--gray-100); color: var(--gray-600); }
+
+/* ── PREV/NEXT ── */
+.pnav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--gray-200); }
+.pnav-btn { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; color: var(--blue); background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 8px 14px; cursor: pointer; transition: background .12s, border-color .12s; }
+.pnav-btn:hover { background: var(--blue-light); border-color: var(--blue); text-decoration: none; }
+.pnav-mid { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gray-400); text-transform: uppercase; letter-spacing: .1em; }
+
+/* ── QUOTES ── */
+.qgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+.qcard { background: white; border: 1px solid var(--gray-200); border-left: 3px solid var(--blue); border-radius: var(--radius); padding: 14px 16px; }
+.qcard blockquote { font-size: 13.5px; font-style: italic; color: var(--gray-700); line-height: 1.6; margin-bottom: 8px; }
+.qcard cite { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gray-400); font-style: normal; }
+
+/* ── INDEX PAGE ── */
+.idx-intro { max-width: 900px; margin: 0 auto; padding: 36px 20px 24px; }
+.idx-intro p { font-size: 14.5px; color: var(--gray-600); margin-bottom: 10px; }
+.idx-lbl { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-400); margin-top: 6px; display: block; }
+
+/* ── FOOTER ── */
+footer { text-align: center; padding: 20px; font-size: 12px; color: var(--gray-400); border-top: 1px solid var(--gray-200); background: white; margin-top: 0; }
+footer a { color: var(--gray-600); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .mod-body { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--gray-200); }
+  .main { padding: 20px 16px 48px; }
+  .hero { padding: 32px 16px 28px; }
+  .idx-intro { padding: 24px 16px 16px; }
+  .units-grid { padding: 0 16px 40px; grid-template-columns: 1fr; }
+  .qgrid { grid-template-columns: 1fr; }
+  .site-header { padding: 10px 16px; }
+}
+
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div>
+    <div class="course-name">Writing for Digital Media &nbsp;·&nbsp; <a href="https://www.linkedin.com/in/hagu1/" target="_blank">Hamid Guedra</a></div>
+    <div class="inst"><a href="https://lab.fi/en" target="_blank">LAB University of Applied Sciences</a></div>
+  </div>
+  <nav class="site-nav">
+    <a href="index.html">🏠 Home</a>
+    <a href="introduction.html">Introduction</a>
+    <a href="unit-a.html">A · Internet Language</a>
+    <a href="unit-b.html">B · Participatory Culture</a>
+    <a href="unit-c.html" class="current">C · Writing for the Web</a>
+    <a href="unit-d.html">D · Social Media</a>
+    <a href="unit-extra.html">Extra · Podcasting</a>
+  </nav>
+</header>
+<div class="hero">
+  <h1>Unit C — Writing for the Web</h1>
+  <p class="subtitle">Writing styles, reading patterns, keywords, AI tools, paragraph structure, and cohesion.</p>
+  <div class="badges"><span class="badge">Web Writing</span><span class="badge">UX Writing</span><span class="badge">Paragraphs</span><span class="badge">Cohesion</span><span class="badge">AI Tools</span></div>
+  <div class="credit">Designed by <a href="https://www.linkedin.com/in/hagu1/" target="_blank">Hamid Guedra</a> &nbsp;·&nbsp; <a href="https://lab.fi/en" target="_blank">LAB University of Applied Sciences</a></div>
+</div>
+<nav class="tabs-bar">
+  <button class="tab-btn  active" data-tab="intro">📋 Intro</button>
+  <button class="tab-btn" data-tab="c1">C1</button>
+  <button class="tab-btn" data-tab="c2">C2</button>
+  <button class="tab-btn" data-tab="c3">C3</button>
+  <button class="tab-btn" data-tab="c4">C4</button>
+  <button class="tab-btn" data-tab="c5">C5</button>
+  <button class="tab-btn" data-tab="c6">C6</button>
+  <button class="tab-btn" data-tab="c7">C7</button>
+  <button class="tab-btn" data-tab="c8">C8</button>
+  <button class="tab-btn" data-tab="c9">C9</button>
+  <button class="tab-btn" data-tab="sc">📚 Study Package</button>
+</nav>
+<div class="mod-body">
+  <aside class="sidebar">
+    <span class="sb-lbl">Unit C</span>
+    <button class="sb-intro on" onclick="show('intro',this)">— Introduction</button>
+    <button class="sb-item" onclick="show('c1',this)"><span class="sb-n">C1</span>4 Writing Styles</button>
+    <button class="sb-item" onclick="show('c2',this)"><span class="sb-n">C2</span>Writing for the Web 1</button>
+    <button class="sb-item" onclick="show('c3',this)"><span class="sb-n">C3</span>Writing for the Web 2</button>
+    <button class="sb-item" onclick="show('c4',this)"><span class="sb-n">C4</span>Writing for the Web 3</button>
+    <button class="sb-item" onclick="show('c5',this)"><span class="sb-n">C5</span>Keywords</button>
+    <button class="sb-item" onclick="show('c6',this)"><span class="sb-n">C6</span>AI Tools</button>
+    <button class="sb-item" onclick="show('c7',this)"><span class="sb-n">C7</span>Neat Documents</button>
+    <button class="sb-item" onclick="show('c8',this)"><span class="sb-n">C8</span>Writing Paragraphs</button>
+    <button class="sb-item" onclick="show('c9',this)"><span class="sb-n">C9</span>Cohesion</button>
+    <button class="sb-item" onclick="show('sc',this)"><span class="sb-n">SP</span>Study Package</button>
+  </aside>
+  <main class="main">
+    <div id="intro" class="sec on">
+      <div class="sec-hd"><span class="sec-tag">Unit C</span><h2>Writing for the Web</h2></div>
+      <div class="intro-box"><h3>Welcome to Unit C</h3><p>The largest unit in the coursebook — covering the four major writing styles, how people scan and read online content, keywords and SEO basics, using AI tools, document formatting, paragraph structure, and cohesion devices. Click any section to begin:</p></div>
+      <div class="sec-grid"><button class="scrd" onclick="show('c1',document.querySelectorAll('.sb-item')[0])"><div class="scrd-n">C1</div><div class="scrd-t">4 Essential Writing Styles</div><div class="scrd-m">Video</div></button><button class="scrd" onclick="show('c2',document.querySelectorAll('.sb-item')[1])"><div class="scrd-n">C2</div><div class="scrd-t">Writing for the Web 1</div><div class="scrd-m">Video</div></button><button class="scrd" onclick="show('c3',document.querySelectorAll('.sb-item')[2])"><div class="scrd-n">C3</div><div class="scrd-t">Writing for the Web 2</div><div class="scrd-m">Video</div></button><button class="scrd" onclick="show('c4',document.querySelectorAll('.sb-item')[3])"><div class="scrd-n">C4</div><div class="scrd-t">Writing for the Web 3</div><div class="scrd-m">Video</div></button><button class="scrd" onclick="show('c5',document.querySelectorAll('.sb-item')[4])"><div class="scrd-n">C5</div><div class="scrd-t">Keywords</div><div class="scrd-m">Video</div></button><button class="scrd" onclick="show('c6',document.querySelectorAll('.sb-item')[5])"><div class="scrd-n">C6</div><div class="scrd-t">AI Tools</div><div class="scrd-m">Video</div></button><button class="scrd" onclick="show('c7',document.querySelectorAll('.sb-item')[6])"><div class="scrd-n">C7</div><div class="scrd-t">Neat Documents</div><div class="scrd-m">Video</div></button><button class="scrd" onclick="show('c8',document.querySelectorAll('.sb-item')[7])"><div class="scrd-n">C8</div><div class="scrd-t">Writing Paragraphs</div><div class="scrd-m">Video</div></button><button class="scrd" onclick="show('c9',document.querySelectorAll('.sb-item')[8])"><div class="scrd-n">C9</div><div class="scrd-t">Cohesion</div><div class="scrd-m">Video · Connecting devices</div></button><button class="scrd" onclick="show('sc',document.querySelectorAll('.sb-item')[9])"><div class="scrd-n">SP</div><div class="scrd-t">Study Package C</div><div class="scrd-m">Readings · 11–13 hrs</div></button></div>
+      <button class="start-btn" onclick="show('c1',document.querySelectorAll('.sb-item')[0])">Start with C1 →</button>
+    </div>
+    <div id="c1" class="sec"><div class="sec-hd"><span class="sec-tag">C1</span><h2>Four Essential Types of Writing Styles</h2></div><div class="vid"><iframe src="https://www.youtube.com/embed/qL5NNM-M6Lw?enablejsapi=1" allowfullscreen loading="lazy"></iframe></div><div class="pnav"><button class="pnav-btn" onclick="show('intro',document.querySelector('.sb-intro'))">← Introduction</button><span class="pnav-mid">C1 of 10</span><button class="pnav-btn" onclick="show('c2',document.querySelectorAll('.sb-item')[1])">C2 →</button></div></div>
+    <div id="c2" class="sec"><div class="sec-hd"><span class="sec-tag">C2</span><h2>Writing for the Web 1</h2></div><div class="vid"><iframe src="https://www.youtube.com/embed/hxWiAAJVC70?enablejsapi=1" allowfullscreen loading="lazy"></iframe></div><div class="pnav"><button class="pnav-btn" onclick="show('c1',document.querySelectorAll('.sb-item')[0])">← C1</button><span class="pnav-mid">C2 of 10</span><button class="pnav-btn" onclick="show('c3',document.querySelectorAll('.sb-item')[2])">C3 →</button></div></div>
+    <div id="c3" class="sec"><div class="sec-hd"><span class="sec-tag">C3</span><h2>Writing for the Web 2</h2></div><div class="vid"><iframe src="https://www.youtube.com/embed/oz-vfCVRjlQ?enablejsapi=1" allowfullscreen loading="lazy"></iframe></div><div class="pnav"><button class="pnav-btn" onclick="show('c2',document.querySelectorAll('.sb-item')[1])">← C2</button><span class="pnav-mid">C3 of 10</span><button class="pnav-btn" onclick="show('c4',document.querySelectorAll('.sb-item')[3])">C4 →</button></div></div>
+    <div id="c4" class="sec"><div class="sec-hd"><span class="sec-tag">C4</span><h2>Writing for the Web 3</h2></div><div class="vid"><iframe src="https://www.youtube.com/embed/UbW3g-ASLb4?enablejsapi=1" allowfullscreen loading="lazy"></iframe></div><div class="pnav"><button class="pnav-btn" onclick="show('c3',document.querySelectorAll('.sb-item')[2])">← C3</button><span class="pnav-mid">C4 of 10</span><button class="pnav-btn" onclick="show('c5',document.querySelectorAll('.sb-item')[4])">C5 →</button></div></div>
+    <div id="c5" class="sec"><div class="sec-hd"><span class="sec-tag">C5</span><h2>Writing for the Web: Keywords</h2></div><div class="vid"><iframe src="https://www.youtube.com/embed/D1dE1KAsg34?enablejsapi=1" allowfullscreen loading="lazy"></iframe></div><div class="pnav"><button class="pnav-btn" onclick="show('c4',document.querySelectorAll('.sb-item')[3])">← C4</button><span class="pnav-mid">C5 of 10</span><button class="pnav-btn" onclick="show('c6',document.querySelectorAll('.sb-item')[5])">C6 →</button></div></div>
+    <div id="c6" class="sec"><div class="sec-hd"><span class="sec-tag">C6</span><h2>AI Tools</h2></div><div class="vid"><iframe src="https://www.youtube.com/embed/J2zE7CrgtfE?enablejsapi=1" allowfullscreen loading="lazy"></iframe></div><div class="pnav"><button class="pnav-btn" onclick="show('c5',document.querySelectorAll('.sb-item')[4])">← C5</button><span class="pnav-mid">C6 of 10</span><button class="pnav-btn" onclick="show('c7',document.querySelectorAll('.sb-item')[6])">C7 →</button></div></div>
+    <div id="c7" class="sec"><div class="sec-hd"><span class="sec-tag">C7</span><h2>Creating Neat Documents</h2></div><div class="vid"><iframe src="https://www.youtube.com/embed/QuUNdf-9AM8?enablejsapi=1" allowfullscreen loading="lazy"></iframe></div><div class="pnav"><button class="pnav-btn" onclick="show('c6',document.querySelectorAll('.sb-item')[5])">← C6</button><span class="pnav-mid">C7 of 10</span><button class="pnav-btn" onclick="show('c8',document.querySelectorAll('.sb-item')[7])">C8 →</button></div></div>
+    <div id="c8" class="sec"><div class="sec-hd"><span class="sec-tag">C8</span><h2>Writing Paragraphs</h2></div><div class="vid"><iframe src="https://www.youtube.com/embed/LuVt9DzzqjU?enablejsapi=1" allowfullscreen loading="lazy"></iframe></div><div class="pnav"><button class="pnav-btn" onclick="show('c7',document.querySelectorAll('.sb-item')[6])">← C7</button><span class="pnav-mid">C8 of 10</span><button class="pnav-btn" onclick="show('c9',document.querySelectorAll('.sb-item')[8])">C9 →</button></div></div>
+    <div id="c9" class="sec">
+      <div class="sec-hd"><span class="sec-tag">C9</span><h2>Cohesion</h2></div><div class="vid"><iframe src="https://www.youtube.com/embed/ZviKZF178J0?enablejsapi=1" allowfullscreen loading="lazy"></iframe></div><div class="bmarks"><h4>Bookmarks</h4><div class="bm"><span class="bm-t">0:22</span>Connecting words</div><div class="bm"><span class="bm-t">1:46</span>Conjunctions</div><div class="bm"><span class="bm-t">3:04</span>Repeating key terms</div><div class="bm"><span class="bm-t">4:11</span>Using pronouns</div><div class="bm"><span class="bm-t">5:10</span>Using passive voice</div></div>
+      <div class="pnav"><button class="pnav-btn" onclick="show('c8',document.querySelectorAll('.sb-item')[7])">← C8</button><span class="pnav-mid">C9 of 10</span><button class="pnav-btn" onclick="show('sc',document.querySelectorAll('.sb-item')[9])">Study Package →</button></div>
+    </div>
+    <div id="sc" class="sec">
+      <div class="sec-hd"><span class="sec-tag">Study Package</span><h2>Study Package C: Writing for the Web</h2></div>
+      <div class="smeta"><span class="chip">⏱ 11–13 hrs</span><span>Covers: 4 Writing Styles (C1) and Writing for the Web (C2–C9)</span></div>
+      <div class="ai-box"><h4>🤖 AI-Generated Study Aids — Google NotebookLM</h4><div class="ai-row"><span class="ico">📄</span><div><a href="https://drive.google.com/file/d/1JtaueVmC3X5xJ2qy_WkUra4juYDB-6OV/view?usp=drive_link" target="_blank">Study Package C Summary</a><p>AI-generated summary. Read critically; may not be 100% accurate.</p></div></div><div class="ai-row"><span class="ico">🎙️</span><div><a href="https://drive.google.com/file/d/1yvX5OEesJsU2kt4hqshHlgmC1vHQBqlJ/view?usp=drive_link" target="_blank">Study Package C Podcast</a><p>AI-generated podcast. Listen critically.</p></div></div></div>
+      <div class="res-blk"><h4>Required — Read / Watch</h4><div class="rr"><span class="rr-n">1</span><div class="rr-b"><a href="https://www.grammarly.com/blog/types-of-writing/" target="_blank">Types of Writing</a></div><span class="rtag t-skim">Skim</span></div><div class="rr"><span class="rr-n">2</span><div class="rr-b"><a href="https://www.nngroup.com/articles/microcontent-how-to-write-headlines-page-titles-and-subject-lines/" target="_blank">Microcontent: A Few Small Words Have a Mega Impact on Business</a></div><span class="rtag t-read">Read</span></div><div class="rr"><span class="rr-n">3</span><div class="rr-b"><a href="https://www.nngroup.com/articles/headings-pickup-lines/" target="_blank">Headings Are Pick-Up Lines: 5 Tips for Writing Headlines That Convert</a></div><span class="rtag t-read">Read</span></div><div class="rr"><span class="rr-n">4</span><div class="rr-b"><a href="https://www.nngroup.com/videos/f-pattern-reading-digital-content/" target="_blank">F-Pattern in Reading Digital Content</a></div><span class="rtag t-watch">Watch</span></div><div class="rr"><span class="rr-n">5</span><div class="rr-b"><a href="https://www.nngroup.com/articles/how-people-read-online/" target="_blank">How People Read Online: New and Old Findings</a></div><span class="rtag t-read">Read</span></div><div class="rr"><span class="rr-n">6</span><div class="rr-b"><a href="https://www.nngroup.com/articles/text-scanning-patterns-eyetracking/" target="_blank">Text Scanning Patterns: Eyetracking Evidence</a></div><span class="rtag t-read">Read</span></div><div class="rr"><span class="rr-n">7</span><div class="rr-b"><a href="https://www.nngroup.com/articles/layer-cake-pattern-scanning/" target="_blank">The Layer-Cake Pattern of Scanning Content on the Web</a></div><span class="rtag t-read">Read</span></div><div class="rr"><span class="rr-n">8</span><div class="rr-b"><a href="https://www.nngroup.com/articles/how-little-do-users-read/" target="_blank">How Little Do Users Read?</a></div><span class="rtag t-read">Read</span></div><div class="rr"><span class="rr-n">9</span><div class="rr-b"><a href="https://thewebsitearchitect.com/does-center-aligned-text-matter-for-accessibility/" target="_blank">Does Text Alignment Matter for Accessibility and Usability?</a></div><span class="rtag t-skim">Skim</span></div><div class="rr"><span class="rr-n">10</span><div class="rr-b"><a href="https://www.nngroup.com/videos/tips-bulleted-lists-digital-content/" target="_blank">4 Tips for Bulleted Lists in Digital Content</a></div><span class="rtag t-watch">Watch</span></div><div class="rr"><span class="rr-n">11</span><div class="rr-b"><a href="https://pressbooks.palni.org/writingfordigitalmedia/chapter/writing-the-genres-of-the-web/" target="_blank">Writing the Genres of the Web</a><div class="note">Scroll down and read <em>Genre Conventions for a Website</em>.</div></div><span class="rtag t-read">Read</span></div><div class="rr"><span class="rr-n">12</span><div class="rr-b"><a href="https://drive.google.com/file/d/1E-QpbBEiDAiWu6C9vZUR1Q7Y46fipIlV/view?usp=sharing" target="_blank">When AI Chatbots Hallucinate</a></div><span class="rtag t-read">Read</span></div><div class="rr"><span class="rr-n">13</span><div class="rr-b"><a href="https://drive.google.com/file/d/1PW4LVW28pNZ_Y_CAWqZETiHFAaTL_BNz/view?usp=sharing" target="_blank">How to write in plain English</a></div><span class="rtag t-skim">Skim</span></div><div class="rr"><span class="rr-n">14</span><div class="rr-b"><a href="https://www.nngroup.com/articles/cringeworthy-words/" target="_blank">Cringeworthy Words to Cut from Online Copy</a></div><span class="rtag t-read">Read</span></div></div><div class="res-blk"><h4>Additional (not required)</h4><div class="rr"><span class="rr-n">1</span><div class="rr-b"><a href="https://drive.google.com/file/d/1wdyhRe_vqoto6jJUiby9D4u9kFZ27HCV/view?usp=sharing" target="_blank">ChatGPT Can Turn Bad Writers into Better Ones</a></div><span class="rtag t-extra">Extra</span></div><div class="rr"><span class="rr-n">2</span><div class="rr-b"><a href="https://www.washingtonpost.com/world/2023/01/18/state-department-times-new-roman-calibri/" target="_blank">State Department to phase out Times New Roman</a></div><span class="rtag t-extra">Extra</span></div><div class="rr"><span class="rr-n">3</span><div class="rr-b"><a href="http://tinyurl.com/on-the-line-online" target="_blank">For Fun: On the Line / Online</a></div><span class="rtag t-fun">Fun</span></div></div>
+      <div class="pnav"><button class="pnav-btn" onclick="show('c9',document.querySelectorAll('.sb-item')[8])">← C9 Cohesion</button><span class="pnav-mid"></span><span></span></div>
+      <div class="pnav" style="justify-content:flex-end;border:none;margin-top:8px;padding-top:0"><a href="unit-d.html" class="pnav-btn">Unit D: Writing for Social Media →</a></div>
+    </div>
+  </main>
+</div>
+<footer>Unit C · <a href="https://lab.fi/en" target="_blank">LAB University of Applied Sciences</a> · Designed by <a href="https://www.linkedin.com/in/hagu1/" target="_blank">Hamid Guedra</a></footer>
+<script>
+function show(id,btn){
+  document.querySelectorAll(".sec").forEach(p=>p.classList.remove("on"));
+  document.querySelectorAll(".sb-item,.sb-intro").forEach(b=>b.classList.remove("on"));
+  document.getElementById(id).classList.add("on");
+  if(btn) btn.classList.add("on");
+  window.scrollTo(0,0);
+}
+</script>
+</body></html>
